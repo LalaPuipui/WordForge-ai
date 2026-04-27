@@ -1,6 +1,6 @@
 # WordForge AI (Next.js + Vercel)
 
-This is a deployable Next.js app with a server-side API route that calls Anthropic securely (your API key stays on the server).
+This is a deployable Next.js app with a server-side API route that calls Google Gemini securely (your API key stays on the server).
 
 ## Run locally
 
@@ -9,7 +9,7 @@ This is a deployable Next.js app with a server-side API route that calls Anthrop
 2) Create `.env.local` in the project root:
 
 ```bash
-ANTHROPIC_API_KEY=YOUR_KEY_HERE
+GEMINI_API_KEY=YOUR_KEY_HERE
 ```
 
 3) Install + start:
@@ -26,7 +26,7 @@ Open `http://localhost:3000`.
 1) Push this folder to a GitHub repo.
 2) In Vercel: **New Project** → import the repo.
 3) Set Environment Variables:
-   - `ANTHROPIC_API_KEY` = your Anthropic key
+   - `GEMINI_API_KEY` = your Gemini key (Google AI Studio)
 4) Deploy.
 
 Vercel will auto-detect Next.js. No special build settings needed.
