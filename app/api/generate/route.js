@@ -18,7 +18,7 @@ export async function POST(req) {
   }
 
   const prompt = typeof body?.prompt === "string" ? body.prompt : "";
-  const model = typeof body?.model === "string" ? body.model : "gemini-1.5-flash";
+  const model = typeof body?.model === "string" ? body.model : "gemini-flash-latest";
   const max_tokens = Number.isFinite(body?.max_tokens) ? body.max_tokens : 1000;
 
   if (!prompt.trim()) return jsonError("Missing prompt.");
@@ -26,30 +26,38 @@ export async function POST(req) {
   try {
     // Google Generative Language API (Gemini)
     // Docs: https://ai.google.dev/
-    const url =
-      `https://generativelanguage.googleapis.com/v1beta/models/` +
-      encodeURIComponent(model) +
-      `:generateContent?key=` +
-      encodeURIComponent(apiKey);
+    const callModel = async (m) => {
+      const url =
+        `https://generativelanguage.googleapis.com/v1beta/models/` +
+        encodeURIComponent(m) +
+        `:generateContent?key=` +
+        encodeURIComponent(apiKey);
 
-    const r = await fetch(url, {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({
-        contents: [
-          {
-            role: "user",
-            parts: [{ text: prompt }],
-          },
-        ],
-        generationConfig: {
-          maxOutputTokens: max_tokens,
-          temperature: 0.7,
+      return await fetch(url, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
         },
-      }),
-    });
+        body: JSON.stringify({
+          contents: [
+            {
+              role: "user",
+              parts: [{ text: prompt }],
+            },
+          ],
+          generationConfig: {
+            maxOutputTokens: max_tokens,
+            temperature: 0.7,
+          },
+        }),
+      });
+    };
+
+    let r = await callModel(model);
+    if (r.status === 404) {
+      // If a model was retired/unavailable, fall back to a commonly available default.
+      r = await callModel("gemini-flash-latest");
+    }
 
     const data = await r.json().catch(() => ({}));
     if (!r.ok) {

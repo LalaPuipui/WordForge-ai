@@ -123,7 +123,7 @@ Label them "Short Bio:", "LinkedIn Bio:", "Full Bio:". Avoid generic phrases lik
   },
 ];
 
-const DEFAULT_MODEL = "gemini-1.5-flash";
+const DEFAULT_MODEL = "gemini-flash-latest";
 
 function useTypewriter(text, speed = 8) {
   const [displayed, setDisplayed] = useState("");
